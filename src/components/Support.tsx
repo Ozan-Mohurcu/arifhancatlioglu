@@ -3,6 +3,7 @@
 import Reveal from "./Reveal";
 import { tiers, supporters } from "@/data/support";
 import { Coffee, Utensils, Bed } from "./Icons";
+import { useI18n } from "@/i18n/I18nProvider";
 
 const iconFor = {
   coffee: Coffee,
@@ -11,6 +12,12 @@ const iconFor = {
 };
 
 export default function Support() {
+  const { m } = useI18n();
+  const tierText = {
+    coffee: { title: m.support.coffeeT, desc: m.support.coffeeD },
+    meal: { title: m.support.mealT, desc: m.support.mealD },
+    hotel: { title: m.support.hotelT, desc: m.support.hotelD },
+  };
   return (
     <section id="destek" className="relative overflow-hidden py-28">
       {/* Yumuşak ışık efekti */}
@@ -19,14 +26,9 @@ export default function Support() {
       <div className="relative mx-auto max-w-6xl px-5">
         <Reveal>
           <div className="text-center">
-            <span className="eyebrow justify-center">Destek Ol</span>
-            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-              Yolculuğu birlikte sürdürelim
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-sand/70">
-              Her destek bir kahve, bir öğün ya da güvenli bir gece demek. Küçük bir katkı,
-              uzun bir yola güç katıyor.
-            </p>
+            <span className="eyebrow justify-center">{m.support.eyebrow}</span>
+            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{m.support.title}</h2>
+            <p className="mx-auto mt-4 max-w-xl text-sand/70">{m.support.desc}</p>
           </div>
         </Reveal>
 
@@ -45,7 +47,7 @@ export default function Support() {
                 >
                   {t.highlight && (
                     <span className="absolute -top-3 rounded-full bg-ember px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-ink">
-                      En çok seçilen
+                      {m.support.popular}
                     </span>
                   )}
                   <span
@@ -55,9 +57,9 @@ export default function Support() {
                   >
                     <Icon size={24} />
                   </span>
-                  <h3 className="mt-5 font-display text-lg font-semibold">{t.title}</h3>
+                  <h3 className="mt-5 font-display text-lg font-semibold">{tierText[t.icon].title}</h3>
                   <div className="mt-1 font-display text-2xl font-bold text-ember">{t.amount}</div>
-                  <p className="mt-2 text-sm text-sand/60">{t.description}</p>
+                  <p className="mt-2 text-sm text-sand/60">{tierText[t.icon].desc}</p>
 
                   {t.shopierUrl ? (
                     <a
@@ -70,11 +72,11 @@ export default function Support() {
                           : "border border-white/15 hover:border-ember hover:text-ember"
                       }`}
                     >
-                      Destek Ol
+                      {m.support.donate}
                     </a>
                   ) : (
                     <span className="mt-7 w-full cursor-not-allowed rounded-full border border-white/10 py-2.5 text-sm font-semibold text-sand/40">
-                      Yakında
+                      {m.support.soon}
                     </span>
                   )}
                 </div>
@@ -88,7 +90,7 @@ export default function Support() {
           <Reveal delay={0.15}>
             <div className="mt-16 text-center">
               <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-gradient">
-                Yola destek olanlar
+                {m.support.wall}
               </h3>
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 {supporters.map((s, i) => (

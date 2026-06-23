@@ -5,6 +5,7 @@ import Reveal from "./Reveal";
 import { socials } from "@/data/site";
 import { youtubeVideos, tiktokVideos, instagramPosts } from "@/data/content";
 import { YouTube, Instagram, TikTok, ArrowUpRight } from "./Icons";
+import { useI18n } from "@/i18n/I18nProvider";
 
 // TikTok linkinden video ID'sini çıkar
 function tiktokId(url: string): string {
@@ -56,6 +57,7 @@ const socialCards = [
 ];
 
 export default function Content() {
+  const { m } = useI18n();
   // Instagram + TikTok embed script'lerini yükle
   useEffect(() => {
     if (instagramPosts.length > 0) {
@@ -72,11 +74,9 @@ export default function Content() {
   return (
     <section id="icerikler" className="relative mx-auto max-w-6xl px-5 py-24">
       <Reveal>
-        <span className="eyebrow">İçerikler</span>
-        <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Yoldan kareler</h2>
-        <p className="mt-3 max-w-lg text-sand/70">
-          En yeni videolar ve gönderiler. Takip et, yolculuğu kaçırma.
-        </p>
+        <span className="eyebrow">{m.content.eyebrow}</span>
+        <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{m.content.title}</h2>
+        <p className="mt-3 max-w-lg text-sand/70">{m.content.desc}</p>
       </Reveal>
 
       {/* Sosyal kartları */}
@@ -161,8 +161,7 @@ export default function Content() {
         instagramPosts.length === 0 && (
           <Reveal delay={0.1}>
             <div className="mt-10 rounded-2xl border border-dashed border-white/15 p-8 text-center text-sand/50">
-              Öne çıkan videolar buraya gelecek. Panelden YouTube veya TikTok bağlantısı eklenince
-              otomatik görünür.
+              {m.content.empty}
             </div>
           </Reveal>
         )}

@@ -9,6 +9,8 @@
 //   public/posts/<id>/1.jpg, 2.jpg ...  koy ve post.localPhotos = 3 yap.
 // ============================================================================
 
+import { postsEn } from "./blog.en";
+
 export type Post = {
   id: string; // url slug
   title: string;
@@ -309,4 +311,16 @@ export function getPhotos(post: Post): string[] {
 
 export function getPost(id: string): Post | undefined {
   return posts.find((p) => p.id === id);
+}
+
+// İçeriği seçilen dile göre döndür (tr veya en; diğerleri en'e düşer)
+export function localizePost(
+  post: Post,
+  contentLocale: "tr" | "en"
+): { title: string; excerpt: string; paragraphs: string[] } {
+  if (contentLocale === "tr") {
+    return { title: post.title, excerpt: post.excerpt, paragraphs: post.paragraphs };
+  }
+  const t = postsEn[post.id];
+  return t ?? { title: post.title, excerpt: post.excerpt, paragraphs: post.paragraphs };
 }

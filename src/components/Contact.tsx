@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import Reveal from "./Reveal";
 import { profile } from "@/data/site";
 import { Send } from "./Icons";
+import { useI18n } from "@/i18n/I18nProvider";
 
 const SERVICE = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
 const TEMPLATE = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
@@ -12,6 +13,7 @@ const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 type Status = "idle" | "sending" | "ok" | "error";
 
 export default function Contact() {
+  const { m } = useI18n();
   const [status, setStatus] = useState<Status>("idle");
   const configured = Boolean(SERVICE && TEMPLATE && PUBLIC_KEY);
 
@@ -56,11 +58,9 @@ export default function Contact() {
     <section id="iletisim" className="relative mx-auto max-w-3xl px-5 py-24">
       <Reveal>
         <div className="text-center">
-          <span className="eyebrow justify-center">İletişim</span>
-          <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Bir mesaj bırak</h2>
-          <p className="mx-auto mt-3 max-w-md text-sand/70">
-            Soru, iş birliği ya da sadece selam — hepsi doğrudan Arifhan&apos;a ulaşır.
-          </p>
+          <span className="eyebrow justify-center">{m.contact.eyebrow}</span>
+          <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{m.contact.title}</h2>
+          <p className="mx-auto mt-3 max-w-md text-sand/70">{m.contact.desc}</p>
         </div>
       </Reveal>
 
@@ -70,14 +70,14 @@ export default function Contact() {
             <input
               name="name"
               required
-              placeholder="Adın"
+              placeholder={m.contact.name}
               className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 outline-none transition focus:border-ember"
             />
             <input
               name="email"
               type="email"
               required
-              placeholder="E-posta"
+              placeholder={m.contact.email}
               className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 outline-none transition focus:border-ember"
             />
           </div>
@@ -85,7 +85,7 @@ export default function Contact() {
             name="message"
             required
             rows={5}
-            placeholder="Mesajın..."
+            placeholder={m.contact.message}
             className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 outline-none transition focus:border-ember"
           />
           <button
@@ -93,21 +93,17 @@ export default function Contact() {
             disabled={status === "sending"}
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ember py-3 font-semibold text-ink transition hover:bg-amber disabled:opacity-60"
           >
-            {status === "sending" ? "Gönderiliyor..." : (<><Send size={18} /> Gönder</>)}
+            {status === "sending" ? m.contact.sending : (<><Send size={18} /> {m.contact.send}</>)}
           </button>
 
-          {status === "ok" && (
-            <p className="text-center text-sm text-moss">Teşekkürler, mesajın ulaştı.</p>
-          )}
+          {status === "ok" && <p className="text-center text-sm text-moss">{m.contact.ok}</p>}
           {status === "error" && (
             <p className="text-center text-sm text-red-400">
-              Bir şeyler ters gitti. Doğrudan {profile.email} adresine yazabilirsin.
+              {m.contact.error} {profile.email}
             </p>
           )}
           {!configured && (
-            <p className="text-center text-xs text-sand/40">
-              (EmailJS henüz bağlanmadı — buton şimdilik e-posta uygulamanı açar.)
-            </p>
+            <p className="text-center text-xs text-sand/40">{m.contact.notConfigured}</p>
           )}
         </form>
       </Reveal>

@@ -3,17 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getBotReply } from "@/lib/chatEngine";
-import { greeting, quickReplies } from "@/data/chatbot";
 import { profile } from "@/data/site";
 import { Chat, Close, Send, Compass } from "./Icons";
+import { useI18n } from "@/i18n/I18nProvider";
 
 type Msg = { from: "bot" | "user"; text: string };
 
 export default function Chatbot() {
+  const { m } = useI18n();
   const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState<Msg[]>([{ from: "bot", text: greeting }]);
+  const [msgs, setMsgs] = useState<Msg[]>([{ from: "bot", text: m.chat.greeting }]);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Dil değişince açılış mesajını güncelle (henüz sohbet başlamadıysa)
+  useEffect(() => {
+    setMsgs((cur) => (cur.length === 1 ? [{ from: "bot", text: m.chat.greeting }] : cur));
+  }, [m.chat.greeting]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -68,9 +74,9 @@ export default function Chatbot() {
                 {!profile.photo && <Compass size={16} />}
               </div>
               <div>
-                <div className="text-sm font-semibold">Arif&apos;in Yol Arkadaşı</div>
+                <div className="text-sm font-semibold">{m.chat.title}</div>
                 <div className="flex items-center gap-1.5 text-xs text-moss">
-                  <span className="h-1.5 w-1.5 rounded-full bg-moss" /> çevrimiçi
+                  <span className="h-1.5 w-1.5 rounded-full bg-moss" /> {m.chat.online}
                 </div>
               </div>
             </div>
@@ -97,7 +103,7 @@ export default function Chatbot() {
               {/* Hızlı sorular (sadece başta) */}
               {msgs.length === 1 && (
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {quickReplies.map((q) => (
+                  {m.chat.quick.map((q) => (
                     <button
                       key={q}
                       onClick={() => send(q)}
@@ -121,7 +127,7 @@ export default function Chatbot() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Bir şey sor..."
+                placeholder={m.chat.placeholder}
                 className="flex-1 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm outline-none focus:border-ember"
               />
               <button

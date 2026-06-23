@@ -1,6 +1,10 @@
+"use client";
+
 import { profile, socials } from "@/data/site";
+import { useI18n } from "@/i18n/I18nProvider";
 
 export default function Footer() {
+  const { m } = useI18n();
   const links = [
     { label: "YouTube", href: socials.youtube },
     { label: "Instagram", href: socials.instagram },
@@ -20,11 +24,11 @@ export default function Footer() {
             </a>
           ))}
           <a href={`mailto:${profile.email}`} className="hover:text-ember">
-            E-posta
+            {m.footer.email}
           </a>
         </div>
         <p className="text-xs text-sand/40">
-          © {new Date().getFullYear()} {profile.name}. Yolda, her zaman.
+          © {new Date().getFullYear()} {profile.name}. {m.footer.tagline}
         </p>
       </div>
     </footer>

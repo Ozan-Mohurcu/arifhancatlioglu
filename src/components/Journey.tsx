@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Reveal from "./Reveal";
 import { visited, currentLocation, upcoming } from "@/data/site";
 import { ChevronDown } from "./Icons";
+import { useI18n } from "@/i18n/I18nProvider";
 
 type Row = {
   city: string;
@@ -14,6 +15,7 @@ type Row = {
 };
 
 export default function Journey() {
+  const { m } = useI18n();
   const [open, setOpen] = useState(false);
 
   const rows: Row[] = [
@@ -27,7 +29,7 @@ export default function Journey() {
     now: "bg-ember border-ember animate-pulse",
     next: "bg-transparent border-sky",
   };
-  const labelText = { done: "Gidildi", now: "Şu an burada", next: "Sırada" };
+  const labelText = { done: m.journey.done, now: m.journey.now, next: m.journey.next };
   const labelColor = { done: "text-moss", now: "text-ember", next: "text-sky" };
 
   return (
@@ -35,17 +37,15 @@ export default function Journey() {
       <Reveal>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <span className="eyebrow">Rota</span>
-            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Yolculuk çizelgesi</h2>
-            <p className="mt-3 max-w-lg text-sand/70">
-              Nereden geçtim, şu an neredeyim ve önümde ne var — hepsi tek bakışta.
-            </p>
+            <span className="eyebrow">{m.journey.eyebrow}</span>
+            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{m.journey.title}</h2>
+            <p className="mt-3 max-w-lg text-sand/70">{m.journey.desc}</p>
           </div>
           <button
             onClick={() => setOpen((v) => !v)}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold transition hover:border-ember hover:text-ember"
           >
-            {open ? "Gizle" : `Tüm rotayı göster (${visited.length})`}
+            {open ? m.journey.hide : `${m.journey.showAll} (${visited.length})`}
             <ChevronDown
               size={16}
               className={`transition ${open ? "rotate-180" : ""}`}
@@ -62,7 +62,7 @@ export default function Journey() {
             <span className="font-display font-semibold">{currentLocation.city}</span>
             <span className="text-sand/60">{currentLocation.country}</span>
             <span className="ml-auto text-xs font-semibold uppercase tracking-wider text-ember">
-              Şu an burada
+              {m.journey.now}
             </span>
           </div>
         </Reveal>

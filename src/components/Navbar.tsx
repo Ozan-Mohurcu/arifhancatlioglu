@@ -3,19 +3,22 @@
 import { useEffect, useState } from "react";
 import { profile } from "@/data/site";
 import { Menu, Close } from "./Icons";
-
-const links = [
-  { href: "#yolculuk", label: "Yolculuk" },
-  { href: "#hakkinda", label: "Hakkında" },
-  { href: "#destek", label: "Destek Ol" },
-  { href: "#icerikler", label: "İçerikler" },
-  { href: "#blog", label: "Günlük" },
-  { href: "#iletisim", label: "İletişim" },
-];
+import { useI18n } from "@/i18n/I18nProvider";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navbar() {
+  const { m } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const links = [
+    { href: "#yolculuk", label: m.nav.journey },
+    { href: "#hakkinda", label: m.nav.about },
+    { href: "#destek", label: m.nav.support },
+    { href: "#icerikler", label: m.nav.content },
+    { href: "#blog", label: m.nav.blog },
+    { href: "#iletisim", label: m.nav.contact },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -36,7 +39,7 @@ export default function Navbar() {
         </a>
 
         {/* Masaüstü menü */}
-        <div className="hidden items-center gap-7 md:flex">
+        <div className="hidden items-center gap-6 md:flex">
           {links.map((l) => (
             <a
               key={l.href}
@@ -46,22 +49,22 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
+          <LanguageSwitcher />
           <a
             href="#destek"
             className="rounded-full bg-ember px-4 py-2 text-sm font-semibold text-ink transition hover:bg-amber"
           >
-            Destek Ol
+            {m.nav.support}
           </a>
         </div>
 
-        {/* Mobil menü butonu */}
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="md:hidden"
-          aria-label="Menü"
-        >
-          {open ? <Close size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Mobil: dil + menü */}
+        <div className="flex items-center gap-3 md:hidden">
+          <LanguageSwitcher compact />
+          <button onClick={() => setOpen((v) => !v)} aria-label="Menü">
+            {open ? <Close size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobil açılır menü */}

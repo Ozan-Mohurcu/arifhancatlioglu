@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/data/site";
+import { I18nProvider } from "@/i18n/I18nProvider";
 
 const display = Poppins({
   subsets: ["latin"],
@@ -37,7 +38,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" className={`${display.variable} ${body.variable}`}>
-      <body>{children}</body>
+      <body>
+        <I18nProvider>{children}</I18nProvider>
+      </body>
     </html>
   );
 }

@@ -22,10 +22,15 @@ export const profile = {
   name: "Arifhan Çatlıoğlu",
   brand: "Arif Yollarda",
   tagline: "Yeni yerler keşfetmek için yola çıktım — gelin beraber keşfedelim.",
+  taglineEn: "I set out to discover new places — let's explore together.",
   bio: `Merhabalar, adım Arifhan, 30 yaşındayım. Yaklaşık 10 senedir boş vakitlerimde
 Türkiye'nin birçok yerini gezip keşfediyorum. Son 4 senedir yurt dışına açıldım;
 artık keşfettiğim yerleri burada anı olarak paylaşacağım. Gelin beraber yeni yerler
 keşfedelim.`,
+  bioEn: `Hi, my name is Arifhan and I'm 30 years old. For about 10 years I've been
+travelling and exploring many parts of Türkiye in my free time. Over the last 4 years
+I've gone abroad; from now on I'll share the places I discover here as memories.
+Let's explore new places together.`,
   // Marker ve "hakkında" için yuvarlak profil fotoğrafı.
   // /public/arifhan.jpg dosyasını koy; yoksa baş harfi gösterilir.
   photo: "/arifhan.png",
@@ -86,8 +91,8 @@ export const upcoming: GeoPoint[] = [];
 // ---------------------------------------------------------------------------
 // İSTATİSTİKLER (hero için)
 // ---------------------------------------------------------------------------
-export const stats = [
-  { label: "Ülke", value: "20+" },
-  { label: "Yıl", value: "10+" },
-  { label: "Şehir", value: "40+" },
+export const stats: { key: "countries" | "years" | "cities"; value: string }[] = [
+  { key: "countries", value: "20+" },
+  { key: "years", value: "10+" },
+  { key: "cities", value: "40+" },
 ];
