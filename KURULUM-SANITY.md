@@ -55,8 +55,7 @@ sitenin adresini "izinli" eklemen gerekiyor (1 dakika):
 - ✅ Destekçiler
 - ✅ Videolar (YouTube/TikTok linki)
 - ✅ Profil fotoğrafı, Hakkımda (TR/EN), slogan, istatistikler
-- ⏳ Blog yazıları: panelde alan var ama siteye bağlanması **bir sonraki adım**
-  (şu an site 18 hazır ülke yazısıyla çalışıyor)
+- ✅ Blog yazıları (panelden yaz, foto yükle → siteye düşer; 18 hazır yazı da durur)
 
 ---
 

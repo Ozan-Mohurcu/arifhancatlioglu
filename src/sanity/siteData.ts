@@ -53,6 +53,23 @@ function ytId(url: string): string {
   return m ? m[1] : url;
 }
 
+// Şehir adından koordinat bul (ücretsiz, anahtarsız — Open-Meteo)
+async function geocode(city: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const q = encodeURIComponent(city.trim());
+    const res = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${q}&count=1&language=tr&format=json`,
+      { next: { revalidate: 86400 } }
+    );
+    const j = await res.json();
+    const r = j?.results?.[0];
+    if (r && typeof r.latitude === "number") return { lat: r.latitude, lng: r.longitude };
+  } catch {
+    /* yoksay */
+  }
+  return null;
+}
+
 const QUERY = `{
   "settings": *[_type=="settings"][0]{photo, taglineTr, taglineEn, bioTr, bioEn, statCountries, statYears, statCities},
   "current": *[_type=="currentLocation"][0]{city, country, location, noteTr, noteEn},
@@ -97,19 +114,31 @@ export async function getSiteData(): Promise<SiteData> {
     { key: "cities", value: s?.statCities || fb.stats[2].value },
   ];
 
-  // Şu anki konum
+  // Şu anki konum — harita konumu yoksa şehir adından otomatik bul
   const c = raw.current;
-  const currentLocation: SiteData["currentLocation"] =
-    c && c.city && c.location
-      ? { id: "now", city: c.city, country: c.country || "", lng: c.location.lng, lat: c.location.lat, noteTr: c.noteTr, noteEn: c.noteEn }
-      : fb.currentLocation;
+  let currentLocation: SiteData["currentLocation"] = fb.currentLocation;
+  if (c && c.city) {
+    const coords = c.location ?? (await geocode(c.city));
+    if (coords) {
+      currentLocation = {
+        id: "now", city: c.city, country: c.country || "", lng: coords.lng, lat: coords.lat,
+        noteTr: c.noteTr, noteEn: c.noteEn,
+      };
+    }
+  }
 
-  // Yerler
-  const mapPlace = (p: { city: string; country: string; location?: { lat: number; lng: number } }, i: number): GeoPoint => ({
-    id: `s${i}`, city: p.city, country: p.country, lng: p.location?.lng ?? 0, lat: p.location?.lat ?? 0,
-  });
-  const sanityVisited = (raw.places || []).filter((p) => p.status === "visited" && p.location).map(mapPlace);
-  const sanityUpcoming = (raw.places || []).filter((p) => p.status === "upcoming" && p.location).map(mapPlace);
+  // Yerler — harita konumu yoksa şehir adından otomatik bul
+  const resolved = await Promise.all(
+    (raw.places || []).map(async (p, i) => {
+      const coords = p.location ?? (await geocode(p.city));
+      if (!coords) return null;
+      const gp: GeoPoint = { id: `s${i}`, city: p.city, country: p.country, lng: coords.lng, lat: coords.lat };
+      return { gp, status: p.status };
+    })
+  );
+  const ok = resolved.filter((r): r is { gp: GeoPoint; status: string } => r !== null);
+  const sanityVisited = ok.filter((r) => r.status === "visited").map((r) => r.gp);
+  const sanityUpcoming = ok.filter((r) => r.status === "upcoming").map((r) => r.gp);
   const visited = sanityVisited.length > 0 ? sanityVisited : fb.visited;
   const upcoming = sanityUpcoming.length > 0 ? sanityUpcoming : fb.upcoming;
 

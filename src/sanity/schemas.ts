@@ -31,7 +31,12 @@ const currentLocation = defineType({
   fields: [
     defineField({ name: "city", title: "Şehir", type: "string", validation: (r) => r.required() }),
     defineField({ name: "country", title: "Ülke", type: "string", validation: (r) => r.required() }),
-    defineField({ name: "location", title: "Harita konumu", type: "geopoint" }),
+    defineField({
+      name: "location",
+      title: "Harita konumu (isteğe bağlı)",
+      type: "geopoint",
+      description: "Boş bırakabilirsin — şehir adından otomatik bulunur. Sadece şehri çok hassas işaretlemek istersen doldur.",
+    }),
     defineField({ name: "noteTr", title: "Kısa not (TR)", type: "string" }),
     defineField({ name: "noteEn", title: "Kısa not (EN)", type: "string" }),
   ],
@@ -49,7 +54,12 @@ const place = defineType({
   fields: [
     defineField({ name: "city", title: "Şehir", type: "string", validation: (r) => r.required() }),
     defineField({ name: "country", title: "Ülke", type: "string", validation: (r) => r.required() }),
-    defineField({ name: "location", title: "Harita konumu", type: "geopoint", validation: (r) => r.required() }),
+    defineField({
+      name: "location",
+      title: "Harita konumu (isteğe bağlı)",
+      type: "geopoint",
+      description: "Boş bırakabilirsin — şehir adından otomatik bulunur.",
+    }),
     defineField({
       name: "status",
       title: "Durum",
