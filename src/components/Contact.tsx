@@ -6,9 +6,11 @@ import { profile } from "@/data/site";
 import { Send } from "./Icons";
 import { useI18n } from "@/i18n/I18nProvider";
 
-const SERVICE = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-const TEMPLATE = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+// EmailJS değerleri herkese açıktır (client tarafında çalışır). Gizli değildir.
+// İstenirse .env.local / Vercel env ile override edilebilir.
+const SERVICE = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_n4qv52s";
+const TEMPLATE = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_mz6gnif";
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "ImkXM4drN_zq9HHQq";
 
 type Status = "idle" | "sending" | "ok" | "error";
 
