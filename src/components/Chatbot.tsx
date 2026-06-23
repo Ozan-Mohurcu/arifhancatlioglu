@@ -3,14 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getBotReply } from "@/lib/chatEngine";
-import { profile } from "@/data/site";
 import { Chat, Close, Send, Compass } from "./Icons";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useSiteData } from "@/sanity/SiteDataProvider";
 
 type Msg = { from: "bot" | "user"; text: string };
 
 export default function Chatbot() {
   const { m } = useI18n();
+  const { currentLocation, profile: p } = useSiteData();
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([{ from: "bot", text: m.chat.greeting }]);
   const [input, setInput] = useState("");
@@ -28,7 +29,7 @@ export default function Chatbot() {
   const send = (text: string) => {
     const clean = text.trim();
     if (!clean) return;
-    const reply = getBotReply(clean);
+    const reply = getBotReply(clean, currentLocation);
     setMsgs((m) => [...m, { from: "user", text: clean }, { from: "bot", text: reply }]);
     setInput("");
   };
@@ -69,9 +70,9 @@ export default function Chatbot() {
             <div className="flex items-center gap-3 border-b border-white/10 bg-ink/60 px-4 py-3">
               <div
                 className="grid h-9 w-9 place-items-center rounded-full border-2 border-ember bg-cover bg-center text-ember"
-                style={{ backgroundImage: profile.photo ? `url(${profile.photo})` : undefined }}
+                style={{ backgroundImage: p.photo ? `url(${p.photo})` : undefined }}
               >
-                {!profile.photo && <Compass size={16} />}
+                {!p.photo && <Compass size={16} />}
               </div>
               <div>
                 <div className="text-sm font-semibold">{m.chat.title}</div>

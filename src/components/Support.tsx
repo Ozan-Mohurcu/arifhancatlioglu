@@ -1,9 +1,10 @@
 "use client";
 
 import Reveal from "./Reveal";
-import { tiers, supporters } from "@/data/support";
+import { tiers } from "@/data/support";
 import { Coffee, Utensils, Bed } from "./Icons";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useSiteData } from "@/sanity/SiteDataProvider";
 
 const iconFor = {
   coffee: Coffee,
@@ -13,6 +14,7 @@ const iconFor = {
 
 export default function Support() {
   const { m } = useI18n();
+  const { supporters } = useSiteData();
   const tierText = {
     coffee: { title: m.support.coffeeT, desc: m.support.coffeeD },
     meal: { title: m.support.mealT, desc: m.support.mealD },

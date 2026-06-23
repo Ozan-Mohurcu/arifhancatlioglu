@@ -2,16 +2,18 @@
 
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { profile, currentLocation, stats, upcoming } from "@/data/site";
+import { profile } from "@/data/site";
 import { Heart, ChevronDown } from "./Icons";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useSiteData } from "@/sanity/SiteDataProvider";
 
 // Harita yalnızca tarayıcıda yüklensin
 const WorldMap = dynamic(() => import("./WorldMap"), { ssr: false });
 
 export default function Hero() {
   const { m, contentLocale } = useI18n();
-  const tagline = contentLocale === "tr" ? profile.tagline : profile.taglineEn;
+  const { currentLocation, stats, upcoming, profile: p } = useSiteData();
+  const tagline = contentLocale === "tr" ? p.taglineTr : p.taglineEn;
   return (
     <section id="yolculuk" className="relative min-h-[100svh] w-full overflow-hidden">
       {/* Arka plan: 3D globe */}

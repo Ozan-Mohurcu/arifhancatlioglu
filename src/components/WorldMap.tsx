@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
-import { visited, upcoming, currentLocation, profile } from "@/data/site";
+import { useSiteData } from "@/sanity/SiteDataProvider";
+import { profile as siteInfo } from "@/data/site";
 
 // Ücretsiz, anahtarsız, kartsız koyu harita stili (Carto dark-matter)
 const STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
@@ -19,6 +20,7 @@ function lineFeature(points: { lng: number; lat: number }[]) {
 }
 
 export default function WorldMap() {
+  const { visited, upcoming, currentLocation, profile } = useSiteData();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [ready, setReady] = useState(false);
@@ -118,7 +120,7 @@ export default function WorldMap() {
       if (profile.photo) {
         photo.style.backgroundImage = `url(${profile.photo})`;
       } else {
-        photo.textContent = profile.name.charAt(0);
+        photo.textContent = siteInfo.name.charAt(0);
       }
       wrap.appendChild(ring);
       wrap.appendChild(photo);
@@ -162,6 +164,8 @@ export default function WorldMap() {
       map.remove();
       mapRef.current = null;
     };
+    // veri sunucudan tek sefer gelir; haritayı bir kez kuruyoruz
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

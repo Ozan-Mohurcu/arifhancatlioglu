@@ -3,9 +3,10 @@
 import { useEffect } from "react";
 import Reveal from "./Reveal";
 import { socials } from "@/data/site";
-import { youtubeVideos, tiktokVideos, instagramPosts } from "@/data/content";
+import { instagramPosts } from "@/data/content";
 import { YouTube, Instagram, TikTok, ArrowUpRight } from "./Icons";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useSiteData } from "@/sanity/SiteDataProvider";
 
 // TikTok linkinden video ID'sini çıkar
 function tiktokId(url: string): string {
@@ -58,6 +59,7 @@ const socialCards = [
 
 export default function Content() {
   const { m } = useI18n();
+  const { youtubeVideos, tiktokVideos } = useSiteData();
   // Instagram + TikTok embed script'lerini yükle
   useEffect(() => {
     if (instagramPosts.length > 0) {

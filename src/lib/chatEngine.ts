@@ -2,7 +2,7 @@
 // Kural tabanlı chatbot motoru — anahtar kelime eşleştirme + canlı konum
 // ============================================================================
 import { intents, fallback } from "@/data/chatbot";
-import { currentLocation } from "@/data/site";
+import { currentLocation as defaultLocation } from "@/data/site";
 
 // Türkçe karakterleri sadeleştir + küçült (eşleşme toleransı için)
 function normalize(text: string): string {
@@ -17,13 +17,14 @@ function normalize(text: string): string {
     .trim();
 }
 
-function fill(template: string): string {
-  return template
-    .replaceAll("{city}", currentLocation.city)
-    .replaceAll("{country}", currentLocation.country);
+function fill(template: string, loc: { city: string; country: string }): string {
+  return template.replaceAll("{city}", loc.city).replaceAll("{country}", loc.country);
 }
 
-export function getBotReply(userText: string): string {
+export function getBotReply(
+  userText: string,
+  current: { city: string; country: string } = defaultLocation
+): string {
   const msg = normalize(userText);
 
   // En çok anahtar kelimesi eşleşen intent'i seç
@@ -39,5 +40,5 @@ export function getBotReply(userText: string): string {
     }
   }
 
-  return best ? fill(best.answer) : fallback;
+  return best ? fill(best.answer, current) : fallback;
 }

@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Reveal from "./Reveal";
-import { visited, currentLocation, upcoming } from "@/data/site";
 import { ChevronDown } from "./Icons";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useSiteData } from "@/sanity/SiteDataProvider";
 
 type Row = {
   city: string;
@@ -15,8 +15,10 @@ type Row = {
 };
 
 export default function Journey() {
-  const { m } = useI18n();
+  const { m, contentLocale } = useI18n();
+  const { visited, currentLocation, upcoming } = useSiteData();
   const [open, setOpen] = useState(false);
+  const currentNote = contentLocale === "tr" ? currentLocation.noteTr : currentLocation.noteEn;
 
   const rows: Row[] = [
     ...visited.map((v) => ({ ...v, state: "done" as const })),
@@ -96,8 +98,8 @@ export default function Journey() {
                       </span>
                       {r.date && <span className="text-xs text-sand/40">{r.date}</span>}
                     </div>
-                    {r.state === "now" && currentLocation.note && (
-                      <p className="mt-1 text-sm text-sand/70">{currentLocation.note}</p>
+                    {r.state === "now" && currentNote && (
+                      <p className="mt-1 text-sm text-sand/70">{currentNote}</p>
                     )}
                   </div>
                 ))}

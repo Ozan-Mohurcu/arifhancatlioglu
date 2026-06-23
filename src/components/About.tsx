@@ -4,10 +4,13 @@ import Reveal from "./Reveal";
 import { profile } from "@/data/site";
 import { Compass, MapPin, Heart } from "./Icons";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useSiteData } from "@/sanity/SiteDataProvider";
 
 export default function About() {
   const { m, contentLocale } = useI18n();
-  const bio = contentLocale === "tr" ? profile.bio : profile.bioEn;
+  const { profile: p } = useSiteData();
+  const bio = contentLocale === "tr" ? p.bioTr : p.bioEn;
+  const photo = p.photo;
   const firstName = profile.name.split(" ")[0];
 
   return (
@@ -18,9 +21,9 @@ export default function About() {
             <div className="aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 bg-ash">
               <div
                 className="h-full w-full bg-cover bg-center"
-                style={{ backgroundImage: profile.photo ? `url(${profile.photo})` : undefined }}
+                style={{ backgroundImage: photo ? `url(${photo})` : undefined }}
               >
-                {!profile.photo && (
+                {!photo && (
                   <div className="flex h-full items-center justify-center text-sand/15">
                     <Compass size={88} />
                   </div>
