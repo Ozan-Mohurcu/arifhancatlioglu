@@ -1,0 +1,10 @@
+Buraya "arifhan.jpg" adında bir profil fotoğrafı koy.
+Kare/dikey, net bir yüz fotoğrafı ideal.
+
+Otomatik olarak şurada kullanılır:
+- Haritadaki canlı konum marker'ı (yuvarlak çerçeve)
+- "Hakkında" bölümü
+- Chatbot başlığı
+
+İstersen blog kapakları için de bir "posts" klasörü açabilirsin:
+  public/posts/gurcistan.jpg  gibi.

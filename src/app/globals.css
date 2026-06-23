@@ -1,0 +1,95 @@
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ink text-sand font-body antialiased;
+  overflow-x: hidden;
+}
+
+/* Bölüm başlıkları için ince üst-çizgi etiketi */
+.eyebrow {
+  @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-ember;
+}
+
+/* Cam efekti kart */
+.glass {
+  @apply bg-white/5 backdrop-blur-md border border-white/10;
+}
+
+/* Vurgu degrade metin */
+.text-gradient {
+  @apply bg-gradient-to-r from-amber via-ember to-amber bg-clip-text text-transparent;
+}
+
+/* Harita atıf/kontrolleri — sade kalsın */
+.maplibregl-ctrl-attrib {
+  opacity: 0.6;
+  font-size: 10px;
+}
+
+/* Konum marker'ı (fotolu pulsing) */
+.marker-wrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+}
+.marker-photo {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 3px solid #f97316;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.25), 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  background-color: #1c1917;
+}
+.marker-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid #f97316;
+  animation: markerPulse 2.4s ease-out infinite;
+  z-index: 1;
+}
+@keyframes markerPulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* İnce kaydırma çubuğu */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0c0a09;
+}
+::-webkit-scrollbar-thumb {
+  background: #292524;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #44403c;
+}
