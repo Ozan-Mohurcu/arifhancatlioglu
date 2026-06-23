@@ -13,6 +13,7 @@ import {
 } from "@/data/site";
 import { supporters as localSupporters } from "@/data/support";
 import { youtubeVideos as localYt, tiktokVideos as localTt } from "@/data/content";
+import { getPostPreviews, localPostPreviews, type PostPreview } from "./blogData";
 
 export type SiteData = {
   profile: { photo: string; bioTr: string; bioEn: string; taglineTr: string; taglineEn: string };
@@ -23,6 +24,7 @@ export type SiteData = {
   supporters: { name: string }[];
   youtubeVideos: string[];
   tiktokVideos: string[];
+  posts: PostPreview[];
 };
 
 // Yerel (yedek) veri
@@ -42,6 +44,7 @@ function localData(): SiteData {
     supporters: localSupporters,
     youtubeVideos: localYt,
     tiktokVideos: localTt,
+    posts: localPostPreviews(),
   };
 }
 
@@ -120,5 +123,13 @@ export async function getSiteData(): Promise<SiteData> {
   const youtubeVideos = yt.length > 0 ? yt : fb.youtubeVideos;
   const tiktokVideos = tt.length > 0 ? tt : fb.tiktokVideos;
 
-  return { profile, stats, currentLocation, visited, upcoming, supporters, youtubeVideos, tiktokVideos };
+  // Blog önizlemeleri (Sanity + yerel birleşik)
+  let posts = fb.posts;
+  try {
+    posts = await getPostPreviews();
+  } catch {
+    posts = fb.posts;
+  }
+
+  return { profile, stats, currentLocation, visited, upcoming, supporters, youtubeVideos, tiktokVideos, posts };
 }

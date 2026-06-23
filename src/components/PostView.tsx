@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Post, getPhotos, localizePost } from "@/data/blog";
 import { useI18n } from "@/i18n/I18nProvider";
+import type { ViewPost } from "@/sanity/blogData";
 
-export default function PostView({ post }: { post: Post }) {
+export default function PostView({ post }: { post: ViewPost }) {
   const { m, contentLocale } = useI18n();
-  const loc = localizePost(post, contentLocale);
-  const photos = getPhotos(post);
+  const title = post.title[contentLocale];
+  const paragraphs = post.paragraphs[contentLocale]?.length
+    ? post.paragraphs[contentLocale]
+    : post.paragraphs.tr;
+  const photos = post.photos;
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-24">
@@ -19,27 +22,30 @@ export default function PostView({ post }: { post: Post }) {
         <span className="rounded-full border border-ember/30 bg-ember/[0.08] px-3 py-1 font-semibold text-amber">
           {post.country}
         </span>
-        <span>{post.city}</span>
-        <span>·</span>
-        <span>{post.date}</span>
+        {post.city && <span>{post.city}</span>}
+        {post.date && (
+          <>
+            <span>·</span>
+            <span>{post.date}</span>
+          </>
+        )}
       </div>
 
-      <h1 className="mt-4 font-display text-3xl font-bold leading-tight sm:text-4xl">{loc.title}</h1>
+      <h1 className="mt-4 font-display text-3xl font-bold leading-tight sm:text-4xl">{title}</h1>
 
-      {/* Kapak */}
-      <div className="mt-8 aspect-[16/9] overflow-hidden rounded-2xl border border-white/10 bg-ash">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={photos[0]} alt={post.country} className="h-full w-full object-cover" />
-      </div>
+      {photos[0] && (
+        <div className="mt-8 aspect-[16/9] overflow-hidden rounded-2xl border border-white/10 bg-ash">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={photos[0]} alt={post.country} className="h-full w-full object-cover" />
+        </div>
+      )}
 
-      {/* Metin */}
       <div className="mt-8 space-y-5 text-lg leading-relaxed text-sand/85">
-        {loc.paragraphs.map((para, i) => (
+        {paragraphs.map((para, i) => (
           <p key={i}>{para}</p>
         ))}
       </div>
 
-      {/* Galeri */}
       {photos.length > 1 && (
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {photos.slice(1).map((src, i) => (
