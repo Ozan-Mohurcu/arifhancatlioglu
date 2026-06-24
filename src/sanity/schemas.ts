@@ -51,8 +51,15 @@ const place = defineType({
   name: "place",
   title: "Yer (Gittiğim / Gelecek)",
   type: "document",
+  description: "Her ŞEHİR için ayrı bir kayıt aç. Aynı ülkeye birden çok şehir eklemek için ülkeyi tekrar yazıp yeni şehir gir — çizelgede ülke altında gruplanır, haritada her şehir ayrı nokta olur.",
   fields: [
-    defineField({ name: "city", title: "Şehir", type: "string", validation: (r) => r.required() }),
+    defineField({
+      name: "city",
+      title: "Şehir",
+      type: "string",
+      description: "Tek şehir yaz. Başka şehir için yeni bir 'Yer' kaydı aç.",
+      validation: (r) => r.required(),
+    }),
     defineField({ name: "country", title: "Ülke", type: "string", validation: (r) => r.required() }),
     defineField({
       name: "location",
