@@ -66,7 +66,7 @@ function sanityToView(d: SanityPost): ViewPost {
   const photos = (d.images || [])
     .map((img) => urlForImage(img))
     .filter((u): u is string => Boolean(u));
-  const fallbackPhoto = `https://loremflickr.com/800/600/${encodeURIComponent(d.country || "travel")}`;
+  const fallbackPhoto = `https://picsum.photos/seed/${encodeURIComponent(d.id || d.country || "travel")}/800/600`;
   return {
     id: d.id || "",
     country: d.country || "",

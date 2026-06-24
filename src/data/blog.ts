@@ -303,9 +303,10 @@ export function getPhotos(post: Post): string[] {
   if (post.localPhotos && post.localPhotos > 0) {
     return Array.from({ length: post.localPhotos }, (_, i) => `/posts/${post.id}/${i + 1}.jpg`);
   }
+  // Güvenilir, deterministik yer-tutucu görseller (picsum)
   return Array.from(
     { length: post.photoCount },
-    (_, i) => `https://loremflickr.com/800/600/${post.photoKeyword}?lock=${post.photoSeed + i}`
+    (_, i) => `https://picsum.photos/seed/${post.photoSeed + i}/800/600`
   );
 }
 
