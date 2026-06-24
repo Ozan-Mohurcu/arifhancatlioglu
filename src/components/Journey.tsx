@@ -7,6 +7,7 @@ import Reveal from "./Reveal";
 import { ChevronDown } from "./Icons";
 import { useI18n } from "@/i18n/I18nProvider";
 import { useSiteData } from "@/sanity/SiteDataProvider";
+import { countryFlag, cleanCountry } from "@/lib/flags";
 
 type Group = {
   country: string;
@@ -76,7 +77,9 @@ export default function Journey() {
         <Reveal>
           <div className="mt-8 flex items-center gap-3 rounded-2xl border border-ember/30 bg-ember/[0.06] px-5 py-4">
             <span className="h-3 w-3 animate-pulse rounded-full bg-ember" />
-            <span className="font-display font-semibold">{currentLocation.country}</span>
+            <span className="font-display font-semibold">
+              {countryFlag(currentLocation.country)} {cleanCountry(currentLocation.country)}
+            </span>
             <span className="text-sand/50">{currentLocation.city}</span>
             <span className="ml-auto text-xs font-semibold uppercase tracking-wider text-ember">
               {m.journey.now}
@@ -101,8 +104,10 @@ export default function Journey() {
                 {rows.map((r, i) => {
                   const Inner = (
                     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      {/* Önce ülke (büyük) */}
-                      <h3 className="font-display text-lg font-semibold">{r.country}</h3>
+                      {/* Önce ülke (bayrak + ad) */}
+                      <h3 className="font-display text-lg font-semibold">
+                        {countryFlag(r.country)} {cleanCountry(r.country)}
+                      </h3>
                       {/* Yanında şehirler (küçük) */}
                       <span className="text-sm text-sand/50">{r.cities.join(", ")}</span>
                       <span
