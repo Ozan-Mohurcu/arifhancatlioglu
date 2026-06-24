@@ -51,21 +51,16 @@ const place = defineType({
   name: "place",
   title: "Yer (Gittiğim / Gelecek)",
   type: "document",
-  description: "Her ŞEHİR için ayrı bir kayıt aç. Aynı ülkeye birden çok şehir eklemek için ülkeyi tekrar yazıp yeni şehir gir — çizelgede ülke altında gruplanır, haritada her şehir ayrı nokta olur.",
+  description: "Bir ÜLKE ekle, içine gezdiğin ŞEHİRLERİ yaz (birden çok). Çizelgede ülke altında yan yana, haritada her şehir ayrı nokta olur. Koordinat girmene gerek yok — şehir adı yeter.",
   fields: [
-    defineField({
-      name: "city",
-      title: "Şehir",
-      type: "string",
-      description: "Tek şehir yaz. Başka şehir için yeni bir 'Yer' kaydı aç.",
-      validation: (r) => r.required(),
-    }),
     defineField({ name: "country", title: "Ülke", type: "string", validation: (r) => r.required() }),
     defineField({
-      name: "location",
-      title: "Harita konumu (isteğe bağlı)",
-      type: "geopoint",
-      description: "Boş bırakabilirsin — şehir adından otomatik bulunur.",
+      name: "cities",
+      title: "Şehirler",
+      type: "array",
+      of: [{ type: "string" }],
+      description: "Her şehri ayrı satır ekle (örn. Tokyo, Osaka, Kyoto). Sürükleyerek sırala.",
+      validation: (r) => r.min(1).error("En az bir şehir ekle"),
     }),
     defineField({
       name: "status",
@@ -81,10 +76,11 @@ const place = defineType({
     defineField({ name: "order", title: "Sıra", type: "number", initialValue: 0 }),
   ],
   preview: {
-    select: { city: "city", country: "country", status: "status" },
-    prepare: ({ city, country, status }) => ({
-      title: `${city}, ${country}`,
-      subtitle: status === "upcoming" ? "Gelecek durak" : "Gittim",
+    select: { country: "country", cities: "cities", status: "status" },
+    prepare: ({ country, cities, status }) => ({
+      title: country,
+      subtitle:
+        (status === "upcoming" ? "Gelecek · " : "") + ((cities as string[]) || []).join(", "),
     }),
   },
 });

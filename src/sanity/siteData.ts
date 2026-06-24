@@ -73,7 +73,7 @@ async function geocode(city: string): Promise<{ lat: number; lng: number } | nul
 const QUERY = `{
   "settings": *[_type=="settings"][0]{photo, taglineTr, taglineEn, bioTr, bioEn, statCountries, statYears, statCities},
   "current": *[_type=="currentLocation"][0]{city, country, location, noteTr, noteEn},
-  "places": *[_type=="place"] | order(order asc){city, country, location, status},
+  "places": *[_type=="place"] | order(order asc){country, city, cities, location, status},
   "supporters": *[_type=="supporter"] | order(order asc){name},
   "videos": *[_type=="video"] | order(order asc){platform, url}
 }`;
@@ -84,7 +84,13 @@ type Raw = {
     statCountries?: string; statYears?: string; statCities?: string;
   } | null;
   current?: { city?: string; country?: string; location?: { lat: number; lng: number }; noteTr?: string; noteEn?: string } | null;
-  places?: { city: string; country: string; location?: { lat: number; lng: number }; status: string }[];
+  places?: {
+    country: string;
+    city?: string; // eski yapı (tek şehir)
+    cities?: string[]; // yeni yapı (çoklu şehir)
+    location?: { lat: number; lng: number };
+    status: string;
+  }[];
   supporters?: { name: string }[];
   videos?: { platform: string; url: string }[];
 };
@@ -127,18 +133,23 @@ export async function getSiteData(): Promise<SiteData> {
     }
   }
 
-  // Yerler — harita konumu yoksa şehir adından otomatik bul
-  const resolved = await Promise.all(
-    (raw.places || []).map(async (p, i) => {
-      const coords = p.location ?? (await geocode(p.city));
-      if (!coords) return null;
-      const gp: GeoPoint = { id: `s${i}`, city: p.city, country: p.country, lng: coords.lng, lat: coords.lat };
-      return { gp, status: p.status };
+  // Yerler — bir ülke, içinde birden çok şehir; her şehir adından koordinat bulunur
+  const resolvedGroups = await Promise.all(
+    (raw.places || []).map(async (p, di) => {
+      const cityList = p.cities && p.cities.length > 0 ? p.cities : p.city ? [p.city] : [];
+      const gps = await Promise.all(
+        cityList.map(async (city, ci) => {
+          const coords = await geocode(city);
+          return coords
+            ? ({ id: `s${di}_${ci}`, city, country: p.country, lng: coords.lng, lat: coords.lat } as GeoPoint)
+            : null;
+        })
+      );
+      return { gps: gps.filter((g): g is GeoPoint => g !== null), status: p.status };
     })
   );
-  const ok = resolved.filter((r): r is { gp: GeoPoint; status: string } => r !== null);
-  const sanityVisited = ok.filter((r) => r.status === "visited").map((r) => r.gp);
-  const sanityUpcoming = ok.filter((r) => r.status === "upcoming").map((r) => r.gp);
+  const sanityVisited = resolvedGroups.filter((g) => g.status === "visited").flatMap((g) => g.gps);
+  const sanityUpcoming = resolvedGroups.filter((g) => g.status === "upcoming").flatMap((g) => g.gps);
   const visited = sanityVisited.length > 0 ? sanityVisited : fb.visited;
   const upcoming = sanityUpcoming.length > 0 ? sanityUpcoming : fb.upcoming;
 
